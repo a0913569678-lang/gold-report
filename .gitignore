@@ -1,0 +1,18 @@
+# 生成产物（不提交）
+gold_report.html
+gold_report.png
+layout*.html
+v2_*.html
+v2_*.png
+preview_*.png
+layouts_compare.png
+report_*.md
+reports/
+
+# Python 缓存
+__pycache__/
+*.pyc
+*.pyo
+
+# 其他
+.DS_Store

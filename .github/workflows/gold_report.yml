@@ -1,0 +1,40 @@
+name: 黄金定投日报
+
+on:
+  schedule:
+    # UTC 0:37 = 北京时间 8:37，每天早上推送
+    - cron: '37 0 * * *'
+  workflow_dispatch:  # 支持手动触发
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: 安装依赖
+        run: |
+          pip install akshare yfinance matplotlib pandas requests
+          pip install playwright
+          python -m playwright install chromium --with-deps
+
+      - name: 生成报告
+        run: python main.py
+
+      - name: 推送到微信（企业微信群机器人）
+        env:
+          WECOM_WEBHOOK: ${{ secrets.WECOM_WEBHOOK }}
+        run: python notify.py
+
+      - name: 保存长图
+        uses: actions/upload-artifact@v4
+        with:
+          name: gold-report-png
+          path: gold_report.png
+          retention-days: 30
